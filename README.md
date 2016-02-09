@@ -3,98 +3,38 @@
 This is a Ruby version of the Gilded Rose Kata, found
 [here](http://iamnotmyself.com/2011/02/13/refactor-this-the-gilded-rose-kata/).
 
-This is a refactorying kata, so you will be starting with a legacy
-code base.  To work the Kata, clone this git repository and checkout
-the tag 'start-here'. Read the description below for the "rules"
-involving this kata.
+I have based mine off a ruby version with rspec tests found [here](https://github.com/jimweirich/gilded_rose_kata).
 
-## Changes from the original
+**This is a completed solution. If you are looking for an incomplete one to add to, please look over the links above.**
 
-This Ruby version follows the original code very closely, but has the
-following changes:
+## The Changes And Why I Chose Them
+### Item
+I moved the Item definition to its own file and wrote it as an actual class with identical functionality.
+This matches the original C# kata this is based from and moves it off to another file, sort of by itself.
 
-* The original had no tests.  Since this is a refactoring kata, I feel
-  the tests are important and provide a fairly complete test suite.
-  Just delete the tests if you wish to "go it alone".
+### EnhancedItem
+I chose to implement the EnhancedItem class to add some flexibility to the requirement of being unable to the Item class directly.
 
-* The original used a hard coded set of "items", presumably for
-  testing the code.  Since I added a test suite, the hard coded values
-  were not of much use.  I also changed the interface to accept a list of
-  items as a parameter rather than a hard coded constant.
+I was introduced to delegates for this project.
+This lets me fall back on the exisiting properties and methods of the original item without implementing equivalents in the EnhancedItem class.  I also get to use the EnhancedItem without assigning results to the original Item by hand.
 
-You can read
-[the original kata article](http://iamnotmyself.com/2011/02/13/refactor-this-the-gilded-rose-kata/) for more details.
+The **type** property is the key feature the EnhancedItem class provides.
+This lets me decide what logic each item should be checked against without all the repeated name checking in the original.
+It also makes it easy to add new items to existing categories or add new categories like the conjured item added for this implementation.
 
-## Installation Hints
+The specific type check methods are a logical following of this though they do not get used in the example here.
+I admit they're mostly an excuse to impliment a legendary method.
 
-The easiest way is to use bundler to install the dependencies. To do so, you need to install the bundler gem if you haven't already done so
+### Update Quality
+The primary change her is moving from nested if then statements to a switch case.
+This allows each type of item to be addressed individually without mixing in the logic of other item types.
 
-    gem install bundler
+The item quality is updated based around the sell_in date using a ternary so if the logic of an item type needs to change how fast the quality changes, it's a small edit to do so.
 
-run bundler
+The maximum and minimum quality checks are handled after the quality is updated.
+This both avoids a series of checks before the assignment to be sure it doesn't go out of bounds and allows minimal editing per item type in case the project requirements were to change.
 
-    bundle
+### RSpec File
+The rspec file has been updated to use expect statements instead of should statements.
 
-and should be ready to go. Alternatively, you can install the dependencies one by one using gem install, e.g.
-
-    gem install rspec-given
-
-Have a look at the Gemfile for all dependencies.
-
-## Git Branches
-
-* The 'master' branch contains the starting point for the kata.  It is
-  also tagged as 'start-here'.
-
-* The 'solution1' branch is my first solution for this kata.
-
-Hope you enjoy this.     -- Jim Weirich
-
-
-# Original Description of the Gilded Rose
-
-Hi and welcome to team Gilded Rose. As you know, we are a small inn
-with a prime location in a prominent city run by a friendly innkeeper
-named Allison. We also buy and sell only the finest
-goods. Unfortunately, our goods are constantly degrading in quality as
-they approach their sell by date. We have a system in place that
-updates our inventory for us. It was developed by a no-nonsense type
-named Leeroy, who has moved on to new adventures. Your task is to add
-the new feature to our system so that we can begin selling a new
-category of items. First an introduction to our system:
-
-- All items have a SellIn value which denotes the number of days we
-  have to sell the item
-- All items have a Quality value which denotes how valuable the item
-  is
-- At the end of each day our system lowers both values for every item
-
-Pretty simple, right? Well this is where it gets interesting:
-
-  - Once the sell by date has passed, Quality degrades twice as fast
-  - The Quality of an item is never negative
-  - "Aged Brie" actually increases in Quality the older it gets
-  - The Quality of an item is never more than 50
-  - "Sulfuras", being a legendary item, never has to be sold or
-    decreases in Quality
-  - "Backstage passes", like aged brie, increases in Quality as it's
-    SellIn value approaches; Quality increases by 2 when there are 10
-    days or less and by 3 when there are 5 days or less but Quality
-    drops to 0 after the concert
-
-We have recently signed a supplier of conjured items. This requires an update to our system:
-
-- "Conjured" items degrade in Quality twice as fast as normal items
-
-Feel free to make any changes to the UpdateQuality method and add any
-new code as long as everything still works correctly. However, do not
-alter the Item class or Items property as those belong to the goblin
-in the corner who will insta-rage and one-shot you as he doesn't
-believe in shared code ownership (you can make the UpdateQuality
-method and Items property static if you like, we'll cover for
-you). Your work needs to be completed by Friday, February 18, 2011
-08:00:00 AM PST.
-
-Just for clarification, an item can never have its Quality increase
-above 50, however "Sulfuras" is a legendary item and as such its
-Quality is 80 and it never alters.
+I also added an expected result to check against for backstage passes at maximum quality (line 108) as it appeared to be missing.
